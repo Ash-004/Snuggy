@@ -66,10 +66,9 @@ backend/
 - `README.md`: Update this file with project-specific notes or changes as the project evolves.
 
 ## Setup Instructions
-
-1. Install PostgreSQL and create `canteen_db`.
-2. Update `application.yml` with your DB credentials and Redis host.
-3. Add `service-account.json` to `resources/` (add to `.gitignore`).
+1. Install PostgreSQL and ensure `psql` is in your PATH.
+2. Run: `psql -U postgres -f setup.sql` to create `canteen_db`.
+3. Update `application.yml` with your PostgreSQL credentials.
 4. Run `mvn clean install` to build the project.
 5. Start the app with `mvn spring-boot:run` or via Docker.
 
@@ -82,12 +81,3 @@ backend/
 Happy coding! 🚀
 ```
 
----
-
-## Instructions
-- Copy the text above.
-- Paste it into a new file named `README.md` in your `backend/` directory (`C:\Users\saran\IdeaProjects\Snuggy\backend\`).
-- Save the file.
-- Open it in your IDE (e.g., IntelliJ) to verify formatting.
-
-This README will guide you and other devs on file placement, aligning with the project structure we’ve established. Let me know if you need help with the next step or a specific file!
