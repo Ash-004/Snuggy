@@ -45,3 +45,15 @@ CREATE TABLE menu (
                       stock INTEGER,
                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE tags (
+                      id SERIAL PRIMARY KEY,
+                      name VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE menu_tags (
+                           menu_id INTEGER REFERENCES menu(id),
+                           tag_id INTEGER REFERENCES tags(id),
+                           PRIMARY KEY (menu_id, tag_id)
+);
+
