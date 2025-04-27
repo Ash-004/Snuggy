@@ -1,4 +1,4 @@
-# Snuggy Backend
+en# Snuggy Backend
 
 This is the Spring Boot backend for the Snuggy Canteen Food Ordering System. It provides REST APIs, WebSocket support, and integrations with Firebase, Redis, and PostgreSQL. Below is a guide on where to place files within the project structure to maintain organization and consistency.
 
