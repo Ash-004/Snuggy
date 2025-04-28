@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -12,4 +13,16 @@ import java.io.Serializable;
 public class TransactionId implements Serializable {
     private Long studentId;
     private Long orderId;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        TransactionId that = (TransactionId) o;
+        return Objects.equals(studentId, that.studentId) && Objects.equals(orderId, that.orderId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(studentId, orderId);
+    }
 }
