@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import com.snuggy.backend.security.UserPrincipal;
+import com.snuggy.backend.exception.ResourceNotFoundException;
 
 import java.util.Map;
 
@@ -34,5 +35,16 @@ public class UserController {
         }
         userService.updateFcmToken(userPrincipal.getId(), token);
         return ResponseEntity.ok("FCM token updated successfully.");
+    }
+
+    @GetMapping("/lookup")
+    @PreAuthorize("hasRole('STAFF')")
+    public ResponseEntity<?> lookupUserByEmail(@RequestParam String email) {
+        try {
+            User user = userService.getUserByEmail(email);
+            return ResponseEntity.ok(user);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 } 

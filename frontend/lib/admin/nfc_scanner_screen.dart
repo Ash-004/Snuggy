@@ -138,7 +138,7 @@ class _NfcScannerScreenState extends State<NfcScannerScreen> with SingleTickerPr
       _error = null;
       _scannedOrder = null;
     });
-
+    
     try {
       final order = await _apiService.getOrderByRfid(uuid);
       setState(() {

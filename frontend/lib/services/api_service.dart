@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/menu_item.dart';
@@ -7,11 +9,39 @@ import '../models/transaction_model.dart';
 import '../models/user_model.dart';
 import '../models/rfid_mapping_model.dart';
 
-// Base API URL
-const String baseUrl = 'http://10.0.2.2:9090/api'; // For Android emulator
-// const String baseUrl = 'http://localhost:9090/api'; // For iOS/web
-
 class ApiService {
+  static String get baseUrl {
+    // Use 10.0.2.2 for Android emulator to connect to host machine's localhost
+    // Use localhost for web
+    // For physical devices, you would use your actual machine's IP address
+    if (kIsWeb) {
+      return 'http://localhost:9090';
+    } else if (Platform.isAndroid) {
+      return 'http://10.0.2.2:9090';
+    } else if (Platform.isIOS) {
+      return 'http://localhost:9090'; // iOS simulator uses localhost
+    } else {
+      return 'http://localhost:9090'; // Default fallback
+    }
+  }
+
+  // Auth endpoints
+  static String get loginUrl => '$baseUrl/api/auth/login';
+  static String get registerUrl => '$baseUrl/api/auth/signup';
+  static String get currentUserUrl => '$baseUrl/api/user/me';
+
+  // Menu endpoints
+  static String get menuUrl => '$baseUrl/api/menu';
+  static String menuItemStockUrl(int id) => '$baseUrl/api/menu/$id/stock';
+
+  // Order endpoints
+  static String get ordersUrl => '$baseUrl/api/orders';
+  static String get myOrdersUrl => '$baseUrl/api/orders/my-orders';
+  static String orderByIdUrl(int id) => '$baseUrl/api/orders/$id';
+  static String orderDispatchUrl(int id) => '$baseUrl/api/orders/$id/dispatch';
+  static String orderConfirmCollectionUrl(int id) => '$baseUrl/api/orders/$id/confirm-collection';
+  static String orderPayUrl(int id) => '$baseUrl/api/orders/$id/pay/upi';
+
   // Singleton instance
   static final ApiService _instance = ApiService._internal();
 
@@ -58,7 +88,7 @@ class ApiService {
   // 1. AUTH
   Future<Map<String, dynamic>> login(String email, String password) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/auth/login'),
+      Uri.parse(loginUrl),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
       body: jsonEncode({'email': email, 'password': password}),
     );
@@ -85,7 +115,7 @@ class ApiService {
 
   Future<Map<String, dynamic>> register(String name, String email, String password) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/auth/register'),
+      Uri.parse(registerUrl),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
       body: jsonEncode({'name': name, 'email': email, 'password': password}),
     );
@@ -107,7 +137,7 @@ class ApiService {
 
   // 2. MENU
   Future<List<MenuItem>> getMenu({Set<String>? tags}) async {
-    var uri = Uri.parse('$baseUrl/menu');
+    var uri = Uri.parse(menuUrl);
     if (tags != null && tags.isNotEmpty) {
       uri = uri.replace(queryParameters: {'tags': tags.join(',')});
     }
@@ -120,7 +150,7 @@ class ApiService {
   Future<MenuItem> addMenuItem(String name, double price, int stock, List<String> tags) async {
     final headers = await _getHeaders();
     final response = await http.post(
-      Uri.parse('$baseUrl/menu'),
+      Uri.parse(menuUrl),
       headers: headers,
       body: jsonEncode({'name': name, 'price': price, 'stock': stock, 'tags': tags}),
     );
@@ -131,7 +161,7 @@ class ApiService {
   Future<MenuItem> updateStock(int menuItemId, int quantityChange) async {
     final headers = await _getHeaders();
     final response = await http.put(
-      Uri.parse('$baseUrl/menu/$menuItemId/stock'),
+      Uri.parse(menuItemStockUrl(menuItemId)),
       headers: headers,
       body: jsonEncode({'quantityChange': quantityChange}),
     );
@@ -143,7 +173,7 @@ class ApiService {
   Future<Order> createOrder(List<Map<String, dynamic>> items) async {
     final headers = await _getHeaders();
     final response = await http.post(
-      Uri.parse('$baseUrl/orders'),
+      Uri.parse(ordersUrl),
       headers: headers,
       body: jsonEncode({'items': items}),
     );
@@ -154,7 +184,7 @@ class ApiService {
   Future<Map<String, dynamic>> initiateUpiPayment(int orderId) async {
     final headers = await _getHeaders();
     final response = await http.post(
-      Uri.parse('$baseUrl/orders/$orderId/pay/upi'),
+      Uri.parse(orderPayUrl(orderId)),
       headers: headers,
     );
     return _handleResponse(response) as Map<String, dynamic>;
@@ -163,7 +193,7 @@ class ApiService {
   Future<void> dispatchOrder(int orderId) async {
     final headers = await _getHeaders();
     final response = await http.post(
-      Uri.parse('$baseUrl/orders/$orderId/dispatch'),
+      Uri.parse(orderDispatchUrl(orderId)),
       headers: headers,
     );
     _handleResponse(response);
@@ -172,7 +202,7 @@ class ApiService {
   Future<void> confirmOrderCollection(int orderId) async {
     final headers = await _getHeaders();
     final response = await http.post(
-      Uri.parse('$baseUrl/orders/$orderId/confirm-collection'),
+      Uri.parse(orderConfirmCollectionUrl(orderId)),
       headers: headers,
     );
     _handleResponse(response);
@@ -181,7 +211,7 @@ class ApiService {
   Future<List<Order>> getMyOrders() async {
     final headers = await _getHeaders();
     final response = await http.get(
-      Uri.parse('$baseUrl/orders/my-orders'),
+      Uri.parse(myOrdersUrl),
       headers: headers,
     );
     final data = _handleResponse(response) as List<dynamic>;
@@ -202,7 +232,7 @@ class ApiService {
   Future<User> getCurrentUser() async {
     final headers = await _getHeaders();
     final response = await http.get(
-      Uri.parse('$baseUrl/user/me'),
+      Uri.parse(currentUserUrl),
       headers: headers,
     );
     final data = _handleResponse(response);

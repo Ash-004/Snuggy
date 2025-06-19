@@ -10,10 +10,9 @@ import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/admin/admin_dashboard_screen.dart';
-import 'admin/inventory_screen.dart';
-import 'admin/order_management_screen.dart';
-import 'admin/nfc_scanner_screen.dart';
-import 'admin/daily_report_screen.dart';
+import 'screens/admin/inventory_screen.dart';
+import 'screens/admin/order_management_screen.dart';
+import 'screens/admin/nfc_scanner_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -66,10 +65,9 @@ class MyApp extends StatelessWidget {
           },
           '/profile': (context) => const ProfilePage(),
           '/admin-dashboard': (context) => const AdminDashboardScreen(),
-          '/admin-inventory': (context) => InventoryScreen(),
-          '/admin-orders': (context) => OrderManagementScreen(),
-          '/admin-nfc': (context) => NfcScannerScreen(),
-          '/admin-reports': (context) => DailyReportScreen(),
+          '/admin-inventory': (context) => const InventoryScreen(),
+          '/admin-orders': (context) => const OrderManagementScreen(),
+          '/admin-nfc': (context) => const NfcScannerScreen(),
         },
       ),
     );

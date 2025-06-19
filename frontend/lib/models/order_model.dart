@@ -1,14 +1,18 @@
+import 'menu_item.dart';
+
 class OrderItem {
   final int id;
   final String name;
   final double price;
   final int quantity;
+  final MenuItem menuItem;
 
   OrderItem({
     required this.id,
     required this.name,
     required this.price,
     required this.quantity,
+    required this.menuItem,
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
@@ -17,6 +21,14 @@ class OrderItem {
       name: json['menuItem']['name'],
       price: json['price'],
       quantity: json['quantity'],
+      menuItem: MenuItem(
+        id: json['menuItem']['id'],
+        name: json['menuItem']['name'],
+        price: json['price'].toDouble(),
+        stock: json['menuItem']['stock'] ?? 0,
+        tags: List<String>.from(json['menuItem']['tags'] ?? []),
+        imageUrl: json['menuItem']['imageUrl'] ?? 'https://via.placeholder.com/150',
+      ),
     );
   }
 }

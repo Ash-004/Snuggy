@@ -41,6 +41,13 @@ public class OrderController {
     @Autowired
     private NotificationService notificationService;
 
+    @GetMapping
+    @PreAuthorize("hasRole('STAFF')")
+    @Transactional(readOnly = true)
+    public List<Order> getAllOrders() {
+        return orderService.getAllOrders();
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('STUDENT')")
     public Order createOrder(@RequestBody OrderRequest orderRequest, @AuthenticationPrincipal UserPrincipal currentUser) {

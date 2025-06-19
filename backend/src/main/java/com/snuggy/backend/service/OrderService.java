@@ -50,6 +50,10 @@ public class OrderService {
     @Autowired
     private NotificationService notificationService;
 
+    public List<Order> getAllOrders() {
+        return orderRepository.findAllWithUserAndRoles();
+    }
+
     public List<Order> getOrdersByStudentId(Integer studentId) {
         return orderRepository.findByStudentIdWithUserAndRoles(studentId);
     }

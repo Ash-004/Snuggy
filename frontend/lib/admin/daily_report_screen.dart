@@ -11,7 +11,7 @@ class DailyReportScreen extends StatefulWidget {
 class _DailyReportScreenState extends State<DailyReportScreen> {
   final ApiService _apiService = ApiService();
   late Future<double> _earningsFuture;
-
+  
   @override
   void initState() {
     super.initState();
@@ -49,4 +49,4 @@ class _DailyReportScreenState extends State<DailyReportScreen> {
       ),
     );
   }
-}
+} 

@@ -3,14 +3,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api_service.dart';
 import '../widgets/custom_bottom_navbar.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfilePageState extends State<ProfilePage> {
   final Color teal = const Color(0xFF006D77);
   final Color background = const Color(0xFFEFF6F7);
   
@@ -45,33 +45,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.pushReplacementNamed(context, '/login');
   }
 
-  void _navigateTo(int index) {
-    switch (index) {
-      case 0:
-        Navigator.pushReplacementNamed(context, '/home');
-        break;
-      case 1:
-        Navigator.pushReplacementNamed(context, '/menu');
-        break;
-      case 2:
-        Navigator.pushReplacementNamed(context, '/cart');
-        break;
-      case 3:
-        Navigator.pushReplacementNamed(context, '/orders');
-        break;
-      case 4:
-        // Already on profile
-        break;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: background,
       bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: 4, // Profile is at index 4
-        onTap: _navigateTo,
+        currentRoute: '/profile',
       ),
       
       body: SafeArea(

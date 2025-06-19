@@ -17,6 +17,7 @@ class CustomBottomNavBar extends StatelessWidget {
       {"label": "Menu", "route": "/menu", "icon": Icons.restaurant_menu},
       {"label": "Cart", "route": "/cart", "icon": Icons.shopping_cart},
       {"label": "Orders", "route": "/orders", "icon": Icons.receipt_long},
+      {"label": "Profile", "route": "/profile", "icon": Icons.person},
     ];
 
     return Container(
@@ -25,11 +26,11 @@ class CustomBottomNavBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: items.map((item) {
-          final isActive = currentRoute == item["route"];
+          final isActive = currentRoute == item["route"] as String;
           return GestureDetector(
             onTap: () {
               if (!isActive) {
-                Navigator.pushReplacementNamed(context, item["route"]!);
+                Navigator.pushReplacementNamed(context, item["route"] as String);
               }
             },
             child: Container(
@@ -48,7 +49,7 @@ class CustomBottomNavBar extends StatelessWidget {
                   if (isActive) SizedBox(width: 8),
                   if (isActive)
                     Text(
-                      item["label"]!,
+                      item["label"] as String,
                       style: TextStyle(
                         color: teal,
                         fontWeight: FontWeight.bold,

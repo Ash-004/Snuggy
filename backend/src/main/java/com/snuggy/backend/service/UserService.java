@@ -25,4 +25,9 @@ public class UserService {
         user.setFcmToken(token);
         userRepository.save(user);
     }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmailWithRoles(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+    }
 } 

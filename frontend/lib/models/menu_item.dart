@@ -32,7 +32,6 @@ class MenuItem {
   Map<String, dynamic> toJson() {
     return {
       'menuId': id,
-      'quantity': quantity,
       'price': price,
     };
   }
