@@ -1,0 +1,215 @@
+## Requirements
+
+### Functional Requirements
+
+1. *User Authentication and Profile Management*
+    - Users log in to the mobile app using phone/email and RFID
+    - System retrieves user profile upon login.
+2. *Food Ordering*
+    - Users browse the canteen menu which displays realtime stock
+    - select items and place orders
+    - Orders are paid for immediately using the integrated payment gateway.
+    - Order confirmation is sent to the user via in-app notification.
+3. *RFID Order Retrieval*
+    - Students tap their RFID-tagged ID card at a canteen reader.
+    - The system retrieves and displays the student’s active orders to canteen staff.
+    - Staff confirm order fulfillment, updating the order status to "completed."
+4. *Canteen Inventory Management*
+    - Canteen staff access a web-based dashboard to add, update, or remove menu items and stock levels.
+    - System automatically decrements stock when orders are placed and in realtime.
+    - Low-stock alerts are sent to staff via dashboard notifications.
+5. *Order and Transaction History*
+    - Users view their past orders and transactions in the app.
+    - Canteen staff view completed orders and inventory changes via the dashboard.
+6. *Notifications*
+    - Users receive notifications for order confirmation, payment status, and order readiness.
+    - Canteen staff receive alerts for new orders and low stock.
+
+### Non-Functional Requirements
+
+1. *Performance*
+    - System handles up to 1000 concurrent users (students and staff) during peak hours.
+    - RFID tap response time < 2 seconds.
+    - Menu and stock updates reflect in real-time (< 5-second delay).
+2. *Scalability*
+    - Backend adheres to *12-Factor App principles* for cloud-native scalability.
+    - System supports adding multiple canteens in the future.
+3. *Security*
+    - Secure authentication using OAuth 2.0 or JWT.
+    - Encrypted communication
+    - Payment transactions comply with PCI-DSS standards.
+    - RFID data is securely mapped to student accounts.
+4. *Reliability*
+    - System uptime of 99.9%.
+    - Graceful handling of network failures (offline order queuing).
+5. *Usability*
+    - Intuitive mobile app UI.
+    - Simple web dashboard for canteen staff.
+    - Responsive design for various device sizes.
+6. *Maintainability (not really required lol)*
+    - Modular codebase with clear documentation.
+    - Automated tests covering 80% of backend code.
+
+### Technical Requirements
+
+- *Backend*: Spring Boot, following 12-Factor App principles.
+- *Frontend*:
+    - Mobile app: Flutter
+    - Canteen dashboard: React.js.
+- *Database*: PostgreSQL
+- *RFID Integration*: REST API to interface with RFID readers.
+- *Payment Gateway*: UPI
+- *Hosting*: Some cloud service with dockers.
+- *CI/CD*: GitHub Actions for automated testing and deployment.
+- *Monitoring*: Logging with ELK Stack or similar; metrics with Prometheus/Grafana (not required for now)
+
+## Phase 1: Planning and Setup
+
+### Dev1
+
+- Design architecture (modular: auth,KM orders, inventory, balance, RFID, UPI).
+- Create Spring Boot project (Maven pom.xml: spring-boot-starter-web, spring-security).
+- Set up Git repository (GitHub), define branches (main, dev, feature).
+- Set up CI/CD (GitHub Actions: mvn clean install, test, deploy).
+- Configure Docker:
+    - Dockerfile (Spring Boot, Java 17, Maven).
+    - docker-compose.yml (backend:8080, PostgreSQL:5432).
+- Create Spring Boot health endpoint (GET /actuator/health) for Docker testing.
+- Document Docker usage (e.g., docker-compose up).
+
+### Dev 2
+
+- Research RFID reader APIs (UID capture, ignore NFC links).
+- Design database schema:
+    - users (id, name, email, password_hash).
+    - orders (id, student_id, items, status, created_at).
+    - menu (id, name, price, stock).
+    - inventory (menu_id, stock, last_updated).
+    - balances (student_id, amount).
+    - rfid_mappings (rfid_uid, student_id, created_at).
+
+### dev3
+
+- design website and the app (easy stuff cos you busy <33)
+
+## Phase 2: Backend Core Development
+
+### Dev1
+
+- Implement auth service (Spring Security, OAuth 2.0, JWT: /login, /refresh).
+- Build core order APIs:
+    - POST /orders (create, validate balance).
+    - PATCH /orders/{id}/status (update).
+- Write integration tests (auth, orders).
+- Configure Flyway (Maven pom.xml: flyway-core).
+- Write migrations:
+    - • V1.1__create_users.sql.
+    - • V1.2__create_orders.sql.
+    - • V1.4__create_balances.sql.
+    - • V1.5__create_rfid_mappings.sql.
+
+### Dev2
+
+- Implement inventory APIs (Spring Boot):
+    - • POST /menu (add item).
+    - • PUT /menu/{id}/stock (update stock).
+    - • GET /menu (list items).
+- Add low-stock alert logic (trigger if stock < 5).
+- Write unit tests for inventory APIs.
+
+### Dev3
+
+- Implement RFID APIs (Spring Boot):
+    - POST /rfid/register (student: rfid_uid, otp).
+    - POST /rfid/admin/register (staff: rfid_uid, student_id).
+    - GET /rfid/{uid} (lookup).
+- Write unit tests for RFID APIs
+
+
+## Phase 3: Frontend and RFID Integration
+
+### Dev1
+
+- Build Spring Boot order retrieval API:
+- • GET /orders/rfid/{uid} (fetch orders via RFID).
+- Integrate RFID reader (REST calls to /orders/rfid/{uid}).
+- Build Flutter screens:
+    - • Login (OAuth flow).
+    - • Order placement (call /orders).
+
+### Dev2
+
+- Build Spring Boot helper API:
+    - GET /orders/student/{studentId} (list student orders).
+- Build Flutter screens:
+• Menu browsing (/menu).
+• Order history (/orders/student).Implement Firebase notifications (order updates).
+- Implement Firebase notifications (order updates).
+
+### Dev3
+
+- Build Spring Boot RFID support API:
+    - GET /rfid/verify (validate OTP for registration).
+- Build React dashboard:
+    - Inventory (/menu, /menu/{id}/stock).
+    - Orders (/orders).
+    - RFID registration (/rfid/admin/register).
+- Add real-time updates (WebSockets for stock/orders).
+
+## Phase4:Transactions, UPI Payments, Daily Earnings
+
+### Dev1:
+
+- **Spring Boot UPI Payment APIs** (15 hours):
+    - • POST /orders/{id}/pay/upi
+    - • POST /orders/{id}/confirm (verify callback, update status to “paid”, store in transactions).
+- **Flutter Payment UI** (7 hours):
+    - • Order payment screen (fetch total, call /orders/{id}/pay/upi, launch upi_india).
+
+### DEV2
+
+- **Spring Boot Daily Earnings API**
+    - GET /earnings/daily (sum transactions.amount where DATE(created_at) = CURRENT_DATE).
+- **Spring Boot Transaction API**
+    - GET /transactions/{userId} (student’s payment history).
+- **Flutter Enhancements** (8 hours):
+    - Transaction history screen (/transactions).
+
+### DEV3
+
+- **Spring Boot Transaction Support** (8 hours):
+    - GET /transactions (all transactions for staff).
+- **React Dashboard Enhancements** (12 hours):
+    - • Daily earnings view (/earnings/daily).
+    - • Transaction history (/transactions).
+- **Notifications and Tests** (10 hours):
+    - • Staff notifications (new paid orders, stock)
+
+
+
+
+
+    1. Refactor the Order Structure (High Priority)
+Currently, the Order entity stores its items as a JSON string. This is a major design weakness that will cause problems later.
+Problem: You cannot easily query order data (e.g., "find all orders containing 'Pizza'"). It also makes managing stock and order modifications very difficult and inefficient.
+Solution: I recommend creating a dedicated OrderItem entity. This would create a proper relational link between Order and Menu items.
+An Order would have a list of OrderItems.
+Each OrderItem would link to one Menu item and contain the quantity and price at the time of purchase.
+This is the most critical change I recommend. It aligns with standard database design principles and will significantly improve the system's flexibility.
+2. Implement Role-Based Access Control (RBAC)
+The application currently lacks a distinction between different types of users (e.g., students vs. canteen staff).
+Problem: Any authenticated user could potentially access sensitive endpoints like daily earnings or stock management.
+Solution: I suggest adding user roles (ROLE_STUDENT, ROLE_STAFF).
+Add a roles field to the User entity.
+Secure endpoints in SecurityConfig so that only users with the ROLE_STAFF role can access administrative APIs (like GET /earnings/daily, POST /menu, etc.).
+3. Implement a Global Exception Handler
+The services currently throw generic RuntimeException. This makes it hard for the frontend to know what went wrong.
+Problem: API clients receive a generic "500 Internal Server Error" for business logic failures (like insufficient balance), which is misleading.
+Solution: I can create a centralized exception handler using @ControllerAdvice.
+I will create custom exceptions like ResourceNotFoundException and InsufficientBalanceException.
+The services will throw these specific exceptions.
+The global handler will catch them and return clear, structured JSON error messages with appropriate HTTP status codes (e.g., 404 Not Found, 400 Bad Request).
+4. Improve Transactional Integrity
+The PaymentService.handleCallback method performs several database writes (updating an order, creating a transaction) but is not transactional.
+Problem: If an error occurs midway through the callback (e.g., the transaction can't be saved after the order status is updated), the database will be left in an inconsistent state.
+Solution: I will add the @Transactional annotation to the handleCallback method to ensure all database operations within it either succeed or fail together.

@@ -1,0 +1,7 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100    86    0    84  100     2  10334    246 --:--:-- --:--:-- --:--:-- 10750
+curl: (3) URL rejected: Port number was not a decimal number between 0 and 65535
+{"timestamp":"2025-06-18T17:11:48.5628746","message":"An unexpected error occurred"}
