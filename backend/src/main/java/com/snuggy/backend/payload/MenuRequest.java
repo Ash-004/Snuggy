@@ -9,5 +9,6 @@ public class MenuRequest {
     private String name;
     private BigDecimal price;
     private Integer stock;
+    private String imageUrl;
     private Set<String> tags;
 } 

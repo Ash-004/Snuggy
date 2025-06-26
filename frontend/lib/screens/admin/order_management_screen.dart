@@ -169,6 +169,14 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
             }
 
             final orders = snapshot.data!;
+            
+            // Sort orders by date (newest first)
+            orders.sort((a, b) {
+              final dateA = a['createdAt'] != null ? DateTime.parse(a['createdAt']) : DateTime(1970);
+              final dateB = b['createdAt'] != null ? DateTime.parse(b['createdAt']) : DateTime(1970);
+              return dateB.compareTo(dateA);
+            });
+            
             return ListView.builder(
               itemCount: orders.length,
               itemBuilder: (context, index) {

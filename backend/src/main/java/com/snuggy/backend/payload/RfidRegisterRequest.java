@@ -7,4 +7,5 @@ public class RfidRegisterRequest {
     private String rfidUid;
     private Integer studentId;
     private String otp;
+    private String email;
 } 

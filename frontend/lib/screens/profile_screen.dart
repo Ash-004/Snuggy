@@ -136,6 +136,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       
                       _buildProfileOption(
+                        icon: Icons.nfc_outlined,
+                        title: 'Register RFID Tag',
+                        onTap: () {
+                          Navigator.pushReplacementNamed(context, '/rfid-registration');
+                        },
+                      ),
+                      
+                      _buildProfileOption(
                         icon: Icons.settings_outlined,
                         title: 'Settings',
                         onTap: () {

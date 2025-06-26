@@ -8,5 +8,5 @@ public class PaymentCallbackRequest {
     private String transactionId;
     private Integer orderId;
     private BigDecimal amount;
-    private String status; // e.g., "SUCCESS", "FAILURE"
+    private String status;
 } 

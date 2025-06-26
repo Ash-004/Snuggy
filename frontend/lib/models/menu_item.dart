@@ -18,12 +18,24 @@ class MenuItem {
   });
 
   factory MenuItem.fromJson(Map<String, dynamic> json) {
+    List<String> parseTags(dynamic tagsData) {
+      if (tagsData == null) return [];
+      if (tagsData is List) {
+        return tagsData.map((tag) {
+          if (tag is String) return tag;
+          if (tag is Map && tag['name'] != null) return tag['name'].toString();
+          return '';
+        }).where((tag) => tag.isNotEmpty).toList();
+      }
+      return [];
+    }
+
     return MenuItem(
       id: json['id'],
       name: json['name'],
-      price: json['price'].toDouble(),
+      price: (json['price'] is int) ? (json['price'] as int).toDouble() : json['price'].toDouble(),
       stock: json['stock'],
-      tags: List<String>.from(json['tags'] ?? []),
+      tags: parseTags(json['tags']),
       // Use a placeholder image if none is provided
       imageUrl: json['imageUrl'] ?? 'https://via.placeholder.com/150?text=${json['name']}',
     );
@@ -31,8 +43,20 @@ class MenuItem {
 
   Map<String, dynamic> toJson() {
     return {
-      'menuId': id,
+      'id': id,
+      'name': name,
       'price': price,
+      'stock': stock,
+      'tags': tags,
+      'imageUrl': imageUrl,
+    };
+  }
+
+  // Method specifically for creating order items
+  Map<String, dynamic> toOrderItem(int quantity) {
+    return {
+      'menuItemId': id,
+      'quantity': quantity,
     };
   }
 } 

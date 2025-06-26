@@ -283,40 +283,36 @@ class _CartPageState extends State<CartPage> {
 
   Future<void> _placeOrder(BuildContext context) async {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    
+
     if (cartProvider.items.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Your cart is empty')),
       );
       return;
     }
-    
+
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
-      // Convert cart items to the format expected by the API
-      final List<Map<String, dynamic>> orderItems = cartProvider.items
-          .map((item) => {
-                'menuItemId': item.menuItem.id,
-                'quantity': item.quantity,
-              })
-          .toList();
-      
+      // Get order items in the format expected by the API
+      final orderItems = cartProvider.toOrderItems();
+
       final order = await _apiService.createOrder(orderItems);
-      
+
       // Clear the cart after successful order
       cartProvider.clearCart();
-      
-      // Navigate to orders page
-      Navigator.pushReplacementNamed(context, '/orders');
       
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Order placed successfully!')),
       );
+
+      // Navigate to orders page
+      Navigator.pushReplacementNamed(context, '/orders');
     } catch (e) {
+      print('Error placing order: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to place order: ${e.toString()}')),
       );

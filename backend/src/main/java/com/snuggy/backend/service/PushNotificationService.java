@@ -23,12 +23,12 @@ public class PushNotificationService {
 
     public void sendNotificationToToken(String token, String title, String body, Map<String, String> data) throws FirebaseMessagingException {
         if (!firebaseEnabled) {
-            // Log the notification details instead of sending
+
             System.out.println("Firebase disabled. Would have sent notification: " + title + " - " + body);
             return;
         }
         
-        // Check if token is null or empty
+
         if (token == null || token.trim().isEmpty()) {
             System.out.println("FCM token is null or empty. Skipping notification: " + title + " - " + body);
             return;

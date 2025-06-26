@@ -43,6 +43,7 @@ public class MenuService {
         menu.setName(menuRequest.getName());
         menu.setPrice(menuRequest.getPrice());
         menu.setStock(menuRequest.getStock());
+        menu.setImageUrl(menuRequest.getImageUrl());
 
         if (menuRequest.getTags() != null && !menuRequest.getTags().isEmpty()) {
             Set<Tag> tagSet = menuRequest.getTags().stream()
@@ -62,8 +63,8 @@ public class MenuService {
             menu.setStock(newStock);
             Menu updatedMenu = menuRepository.save(menu);
 
-            // Check for low stock
-            if (newStock < 5) { // Assuming 5 is the threshold
+
+            if (newStock < 5) {
                 notificationService.sendLowStockWarning(updatedMenu.getName(), newStock);
             }
             

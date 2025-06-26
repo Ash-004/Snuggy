@@ -35,7 +35,7 @@ public class OrderItem {
     private Integer quantity;
 
     @Column(nullable = false)
-    private BigDecimal price; // Price at the time of order
+    private BigDecimal price;
 
     public OrderItem(Order order, Menu menuItem, Integer quantity, BigDecimal price) {
         this.order = order;

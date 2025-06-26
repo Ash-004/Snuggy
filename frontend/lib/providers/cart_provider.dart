@@ -54,4 +54,9 @@ class CartProvider extends ChangeNotifier {
     _items.clear();
     notifyListeners();
   }
+
+  // Convert cart items to the format expected by the API for order creation
+  List<Map<String, dynamic>> toOrderItems() {
+    return _items.map((item) => item.menuItem.toOrderItem(item.quantity)).toList();
+  }
 } 

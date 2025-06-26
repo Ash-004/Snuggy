@@ -11,17 +11,17 @@ import '../models/rfid_mapping_model.dart';
 
 class ApiService {
   static String get baseUrl {
-    // Use 10.0.2.2 for Android emulator to connect to host machine's localhost
-    // Use localhost for web
+    // Use 10.0.2.2 for Android emulator to connect to host machine's 127.0.0.1
+    // Use 127.0.0.1 for web
     // For physical devices, you would use your actual machine's IP address
     if (kIsWeb) {
-      return 'http://localhost:9090';
+      return 'http://127.0.0.1:9090';
     } else if (Platform.isAndroid) {
       return 'http://10.0.2.2:9090';
     } else if (Platform.isIOS) {
-      return 'http://localhost:9090'; // iOS simulator uses localhost
+      return 'http://127.0.0.1:9090'; // iOS simulator uses 127.0.0.1
     } else {
-      return 'http://localhost:9090'; // Default fallback
+      return 'http://127.0.0.1:9090'; // Default fallback
     }
   }
 
@@ -41,6 +41,18 @@ class ApiService {
   static String orderDispatchUrl(int id) => '$baseUrl/api/orders/$id/dispatch';
   static String orderConfirmCollectionUrl(int id) => '$baseUrl/api/orders/$id/confirm-collection';
   static String orderPayUrl(int id) => '$baseUrl/api/orders/$id/pay/upi';
+  static String ordersByUserUrl(int userId) => '$baseUrl/api/orders/user/$userId';
+
+  // RFID endpoints
+  static String get rfidAdminRegisterUrl => '$baseUrl/api/rfid/admin/register';
+  static String get rfidAdminRegisterWithOtpUrl => '$baseUrl/api/rfid/admin/register-with-otp';
+  static String rfidUserUrl(String rfidUid) => '$baseUrl/api/rfid/user/$rfidUid';
+  static String get rfidRequestOtpUrl => '$baseUrl/api/rfid/request-otp';
+  static String rfidRequestOtpForUserUrl(String email) => '$baseUrl/api/rfid/request-otp/$email';
+
+  // User endpoints
+  static String userByIdUrl(int userId) => '$baseUrl/api/user/$userId';
+  static String userLookupUrl(String email) => '$baseUrl/api/user/lookup?email=$email';
 
   // Singleton instance
   static final ApiService _instance = ApiService._internal();
@@ -319,5 +331,37 @@ class ApiService {
     final data = _handleResponse(response) as Map<String, dynamic>;
     // The backend returns a number, which might be int or double.
     return (data['dailyEarnings'] as num).toDouble();
+  }
+
+  Future<void> requestRfidOtp() async {
+    final headers = await _getHeaders();
+    final response = await http.post(
+      Uri.parse(rfidRequestOtpUrl),
+      headers: headers,
+    );
+    _handleResponse(response);
+  }
+
+  Future<void> requestRfidOtpForUser(String email) async {
+    final headers = await _getHeaders();
+    final response = await http.post(
+      Uri.parse(rfidRequestOtpForUserUrl(email)),
+      headers: headers,
+    );
+    _handleResponse(response);
+  }
+
+  Future<void> adminRegisterRfidWithOtp(String rfidUid, String email, String otp) async {
+    final headers = await _getHeaders();
+    final response = await http.post(
+      Uri.parse(rfidAdminRegisterWithOtpUrl),
+      headers: headers,
+      body: jsonEncode({
+        'rfidUid': rfidUid,
+        'email': email,
+        'otp': otp
+      }),
+    );
+    _handleResponse(response);
   }
 } 

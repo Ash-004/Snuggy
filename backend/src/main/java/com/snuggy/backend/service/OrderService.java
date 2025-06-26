@@ -106,23 +106,23 @@ public class OrderService {
             throw new BadRequestException("Insufficient balance");
         }
 
-        // Deduct from stock
+
         for (var orderItem : order.getOrderItems()) {
             menuService.updateStock(orderItem.getMenuItem().getId(), -orderItem.getQuantity());
         }
 
-        // Debit balance
+
         balanceService.updateBalance(studentId, currentBalance.subtract(totalCost));
 
-        // Save the order first
+
         Order savedOrder = orderRepository.save(order);
         
-        // Automatically mark the order as PAID since we've already deducted from balance
+
         savedOrder.setStatus(OrderStatus.PAID);
         savedOrder.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         savedOrder = orderRepository.save(savedOrder);
         
-        // Create a transaction record
+
         Transaction transaction = new Transaction();
         transaction.setId(new TransactionId(user.getId(), savedOrder.getId()));
         transaction.setUser(user);
@@ -131,7 +131,7 @@ public class OrderService {
         transaction.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         transactionService.saveTransaction(transaction);
         
-        // Send notification to staff about the new paid order
+
         notificationService.sendNewOrderNotification(savedOrder);
 
         return savedOrder;

@@ -119,10 +119,14 @@ class _OrdersPageState extends State<OrdersPage> {
                         ),
                       );
                     } else {
+                      // Sort orders by date (newest first)
+                      final sortedOrders = List<Order>.from(snapshot.data!)
+                        ..sort((a, b) => DateTime.parse(b.createdAt).compareTo(DateTime.parse(a.createdAt)));
+                      
                       return ListView.builder(
-                        itemCount: snapshot.data!.length,
+                        itemCount: sortedOrders.length,
                         itemBuilder: (context, index) {
-                          final order = snapshot.data![index];
+                          final order = sortedOrders[index];
                           return orderCard(order);
                         },
                       );
@@ -195,8 +199,8 @@ class _OrdersPageState extends State<OrdersPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('${item.quantity}x ${item.menuItem.name}'),
-                      Text('₹${(item.menuItem.price * item.quantity).toStringAsFixed(2)}'),
+                      Text('${item.quantity}x ${item.name}'),
+                      Text('₹${(item.price * item.quantity).toStringAsFixed(2)}'),
                     ],
                   ),
                 )).toList(),

@@ -79,7 +79,7 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             logger.error("Authentication failed for user: {}", loginRequest.getEmail(), e);
-            // Let Spring's default exception handling produce the 401 Unauthorized response
+
             throw e;
         }
     }
@@ -99,7 +99,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/register")
+    @PostMapping("/signup")
     @Transactional
     public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
         logger.info("Registration attempt for email: {}", signUpRequest.getEmail());
@@ -112,7 +112,7 @@ public class AuthController {
         }
 
         try {
-            // Creating user's account
+
             User user = new User();
             user.setName(signUpRequest.getName());
             user.setEmail(signUpRequest.getEmail());

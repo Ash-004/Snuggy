@@ -13,13 +13,13 @@ public class RequestSender {
 
     public static void main(String[] args) {
         try {
-            // Register a new student
+
             String registerUrl = "http://localhost:8080/api/auth/register";
             String registerJson = "{\"name\": \"teststudent3\", \"email\": \"teststudent3@test.com\", \"password\": \"password\"}";
             sendRequest(registerUrl, registerJson);
             System.out.println("Registration request sent.");
 
-            // Log in to get the token
+
             String loginUrl = "http://localhost:8080/api/auth/login";
             String loginJson = "{\"email\": \"teststudent3@test.com\", \"password\": \"password\"}";
             String loginResponse = sendRequest(loginUrl, loginJson);
@@ -30,7 +30,7 @@ public class RequestSender {
             String accessToken = rootNode.path("accessToken").asText();
             System.out.println("Access Token: " + accessToken);
 
-            // Create an order
+
             String orderUrl = "http://localhost:8080/api/orders";
             String orderJson = "{\"items\": [{\"menuItemId\": 1, \"quantity\": 1}]}";
             String orderResponse = sendAuthenticatedRequest(orderUrl, orderJson, accessToken);

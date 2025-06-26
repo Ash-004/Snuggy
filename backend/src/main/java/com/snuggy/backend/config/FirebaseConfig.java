@@ -19,9 +19,9 @@ public class FirebaseConfig {
         ClassPathResource serviceAccountResource = new ClassPathResource("firebase-service-account.json");
 
         if (!serviceAccountResource.exists()) {
-            // Log a warning or throw a specific exception if the file is essential
+
             System.out.println("Firebase service account key not found. Firebase features will be disabled.");
-            return null; // Or handle as appropriate
+            return null;
         }
 
         try (InputStream serviceAccount = serviceAccountResource.getInputStream()) {
@@ -40,7 +40,7 @@ public class FirebaseConfig {
     @Bean
     public FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp) {
         if (firebaseApp == null) {
-            return null; // Or a mock/dummy implementation
+            return null;
         }
         return FirebaseMessaging.getInstance(firebaseApp);
     }

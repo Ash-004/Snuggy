@@ -9,6 +9,7 @@ import 'screens/payment_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/rfid_registration_screen.dart';
 import 'screens/admin/admin_dashboard_screen.dart';
 import 'screens/admin/inventory_screen.dart';
 import 'screens/admin/order_management_screen.dart';
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
             );
           },
           '/profile': (context) => const ProfilePage(),
+          '/rfid-registration': (context) => const RfidRegistrationScreen(),
           '/admin-dashboard': (context) => const AdminDashboardScreen(),
           '/admin-inventory': (context) => const InventoryScreen(),
           '/admin-orders': (context) => const OrderManagementScreen(),

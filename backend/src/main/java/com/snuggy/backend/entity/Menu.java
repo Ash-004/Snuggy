@@ -22,6 +22,10 @@ public class Menu {
     private String name;
     private BigDecimal price;
     private Integer stock;
+    
+    @Column(length = 1024)
+    private String imageUrl;
+    
     @CreationTimestamp
     private Timestamp createdAt;
 
